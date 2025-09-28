@@ -1,0 +1,23 @@
+services:
+  payments-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payments_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - payments_data:/var/lib/postgresql/data
+
+  fiap-srv-payment:
+    build: .
+    depends_on:
+      - payments-db
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@payments-db:5432/payments_db
+    ports:
+      - "8003:8000"
+
+volumes:
+  payments_data:
